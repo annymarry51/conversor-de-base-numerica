@@ -28,6 +28,29 @@ converte(Num,Base,Resul) :-
     converter(Num, Base, R),
     reverse(R,Aux),atomic_list_concat(Aux,'',Resul).
 
+%converter para decimal
+pecorreLista(_, [], _, _) :- fail.
+pecorreLista(Letra, [Letra|_], C, C) :- !.
+pecorreLista(Letra, [_|Xs], C, Num) :-
+    C1 is C + 1,
+    pecorreLista(Letra, Xs, C1, Num).
+
+converterDecimal([], _, _, 0).
+converterDecimal([X|Xs], Base, Exp, Num) :-
+    Exp1 is Exp + 1,
+    base16(Hexa),
+    pecorreLista(X,Hexa,0,Alg),
+    converterDecimal(Xs, Base, Exp1, Num1),
+    Num is Num1 + Alg * Base^Exp.
+
+converteParaDecimal([X|Xs],Base,Resul) :-
+    (Base=:=10;
+    Base=:=16;
+    Base=:=2;
+    Base=:=8),
+    reverse([X|Xs],Lista),
+    converterDecimal(Lista, Base,0,Resul).
+
 %para calcular o complemento de 1
 
 reverso(0,1).
